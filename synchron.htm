@@ -1,0 +1,110 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Synchronizing PC Clock from a remote server</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2 align="center"><u>Synchronizing PC Clock from a remote server</u></h2>
+
+<p align="left">If you have used personal computers for several
+years, you may remember when PCs did not contain internal clocks.
+In the early PC days, you had to manually enter the current
+date-and-time every time you turned on your PC and booted the
+operating system. People who remember those days will probably
+also remember the problems caused by not setting the computer's
+clock at boot time. e.g. when you had multiple files with the
+same name in different directories, you could not use the file
+date-and-time stamp to tell which file was the latest version.</p>
+
+<p align="left">Today, not setting an accurate date-and-time on
+your PC can cause even more serious problems. e.g. most PC
+programs expect a computer's clock to report an accurate
+date-and-time. Many such programs use the computer's
+date-and-time within their processing. If the date-and-time is
+wrong, so too may be your program's result.</p>
+
+<p align="left">If multiple computers run the same program and
+share data, computers may need to have a
+synchronizeddate-and-time. To synchronize their system clocks,
+the computers can access a network host that runs a time server
+which uses Internet time Protocols to communicate with the time
+client.</p>
+
+<h3 align="left">Internet Time Protocols:</h3>
+
+<p align="left">You will find four different time protocols in
+use on the internet, <em><strong>Time Protocol</strong></em><em>,</em>
+<em><strong>Daytime Protocol, Network Time Protocol </strong></em>(<em><strong>NTP</strong></em>),
+and <em><strong>Simple Network Time Protocol (SNTP)</strong></em>.
+RFC 1305, Network Time Protocol (Version 3) defines the NTP,
+which accurately synchronizes the time between host computers. In
+other words, the protocol helps set the internal clocks on two or
+more computers to the same time. RFC 1305 describes the
+sophisticated algorithms that NTP uses to provide accurate time
+synchronization to within 1 to 50 milliseconds of an official
+time standard. RFC 1361, Simple Network Time Protocol (SNTP) is a
+scaled-down version of the NTP. Although, in practice, SNTP
+provides accuracy similar to that of the NTP, SNTP does not
+guarantee such accuracy. Systems that do not require the
+guaranteed performance that NTP provides can choose to implement
+the SNTP. In contrast to NTP and SNTP, the Daytime and Time
+protocols are very simple network protocols. These protocols, as
+defined in RFC 867, Daytime Protocol, and RFC 868, Time Protocol,
+provide the current time-of-day, to within an accuracy of one
+second, The Time protocol returns a 32-bit number that represents
+elapsed time (in seconds) since 1 January 1900. The Daytime
+Protocol returns a text string formated for people to read. The
+Daytime Protocol does not specify a format for the text string;
+however, in general, the string will look something like the
+following (&quot;\r\n&quot; represents a carriage return line
+feed):</p>
+
+<p align="center"><strong>Thu Jan 19 15:34:25 1995\r\n</strong></p>
+
+<h3 align="left"><strong>Implementing Time Protocol:</strong></h3>
+
+<p><img src="Settime.jpg" align="right" hspace="10" width="345"
+height="244">Here we will use the Winsock.OCX in Visual Basic to
+implement the Time Protocol as described in RFC 868. Time server
+programs, which uses the Time Protocol report the current
+date-and-time (within an accuracy of one second) to client
+programs. The Time Protocol can use either of the transport
+protocols within the TCP/IP protocol suit i.e. either TCP or UDP.
+The well-known protocol port for the Time Protocol is 37. A
+time-server program listen for TCP connections and UDP datagrams
+on prot 37. Both TCP and UDP use the same port. When a time
+server hears a TCP connection on port 37, the server returns a
+32-bit number that represents the current date-and-time. the
+server then initiates an active close of the TCP connection. If
+the time server cannot determine the current time on its own host
+computer, the protocol requires the server to either refuse the
+connection or close the connection without returning anything.
+When a time server uses TCP, the following sequence of events
+occurs:</p>
+
+<ol>
+    <li>The time server listens on port 37</li>
+    <li>A time client connects on port 37</li>
+    <li>The time server sends a 32-bit binary number that
+        represents the current date-and-time.</li>
+    <li>The time client receives the date-and-time, as
+        represented in the 32-bit binary number.</li>
+    <li>The time server initiates an active close.</li>
+    <li>The time client initiates a passive close.</li>
+</ol>
+
+<p>The 32-bit number returned by the time server represents time
+as a number of seconds since 00:00 (midnight) 1 January 1900,
+such that the time &quot;1&quot; is 12:00:01 am on January 1,
+1900 GMT. I implemented the above procedure along with some time
+zone manupulation in the VB programe. The source code is included
+with this article and is easy to follow (I hope :))</p>
+
+<p align="left">&nbsp;</p>
+</body>
+</html>
